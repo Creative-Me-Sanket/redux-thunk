@@ -1,23 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getData } from "./Feature/slice/dataSlice";
+
 
 function App() {
+  const dispatch = useDispatch();
+  const { data, isSuccess, loading, message } = useSelector((state) => state.data);
+
+  useEffect(() => {
+   
+    dispatch(getData());
+  }, [dispatch]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Product List</h1>
+      {loading ? (
+        <p>Loading...</p>
+      ) : isSuccess ? (
+        <ul>
+          {data.products.map((product) => (
+            <li key={product.id}>
+              <h2>{product.title}</h2>
+              <p>{product.description}</p>
+              <p>Price : {product.price}</p>
+              <p>Rating : {product.rating}</p>
+              <img src={product.thumbnail} alt={product.title} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>Error: {message}</p>
+      )}
     </div>
   );
 }
